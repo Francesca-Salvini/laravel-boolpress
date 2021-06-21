@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Post;
 
@@ -20,7 +21,7 @@ class PostController extends Controller
             'posts' => $posts
         ];
 
-        return view('guest.posts.index', $data);
+        return view('admin.posts.index', $data);
     }
 
     /**
@@ -50,19 +51,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($slug)
+    public function show($id)
     {
-        $post = Post::where('slug', '=', $slug)->first();
-
-        if(!$post) {
-            abort('404');
-        }
-
-        $data = [
-            'post' => $post
-        ];
-
-        return view('guest.posts.show', $data);
+        //
     }
 
     /**
