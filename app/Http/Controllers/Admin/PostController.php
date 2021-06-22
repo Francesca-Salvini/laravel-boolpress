@@ -109,9 +109,11 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::findOrFail($id);
+        $categories = Category::all();
 
         $data = [
-            'post' => $post
+            'post' => $post,
+            'categories' => $categories
         ];
 
         return view('admin.posts.edit', $data);
@@ -129,7 +131,8 @@ class PostController extends Controller
 
         $request->validate( [
             'title' => 'required|max:255',
-            'content' => 'required|max:65000'
+            'content' => 'required|max:65000',
+            'category_id' => 'nullable|exists:categories,id'
         ] );
 
         $modified_post_data = $request->all();
