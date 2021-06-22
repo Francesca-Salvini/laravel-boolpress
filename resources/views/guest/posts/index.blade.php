@@ -2,9 +2,9 @@
 
 @section('content')
     <div class="container">
-        <h1>Coronavirus: ultime notizie</h1>
+        <h1>Giallo Zafferano</h1>
 
-        <h2>Ministero della Salute</h2>
+        <h2>Ricette di Natale</h2>
 
         <div class="row">
             @foreach($posts as $post)

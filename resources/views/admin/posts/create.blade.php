@@ -23,12 +23,12 @@
 
             <div class="form-group">
                 <label for="title">Titolo</label>
-                <input type="text" class="form-control" id="title" name="title">
+                <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
             </div>
 
             <div class="form-group">
                 <label for="content">Contenuto</label>
-                <textarea  class="form-control" id="content" name="content" cols="30" rows="10"></textarea>
+                <textarea  class="form-control" id="content" name="content" cols="30" rows="10">{{ old('content') }}</textarea>
             </div>
 
             <div class="form-group">
@@ -37,7 +37,7 @@
                     <option value="">Nessuna</option>
 
                     @foreach($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                     @endforeach
                 </select>
             </div>

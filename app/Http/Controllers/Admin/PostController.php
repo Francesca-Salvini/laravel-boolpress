@@ -52,7 +52,8 @@ class PostController extends Controller
     {
         $request->validate( [
             'title' => 'required|max:255',
-            'content' => 'required|max:65000'
+            'content' => 'required|max:65000',
+            'category_id' => 'nullable|exists:categories,id'
         ] );
 
         $new_post_data = $request->all();
