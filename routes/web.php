@@ -17,8 +17,13 @@ Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
 
+// Gestione pubblica dei post
 Route::get('/blog', 'PostController@index')->name('blog');
 Route::get('/blog/{slug}', 'PostController@show')->name('blog-page');
+
+// Categorie ricette
+Route::get('/categories', 'CategoryController@index')->name('categories');
+Route::get('/categories/{slug}', 'CategoryController@show')->name('category-page');
 
 Route::get('vue-posts', 'PostController@vuePosts')->name('vue-post');
 
