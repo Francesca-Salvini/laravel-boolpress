@@ -37,10 +37,25 @@
                     <option value="">Nessuna</option>
 
                     @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }} >{{ $category->name }}</option>
                     @endforeach
                 </select>
             </div>
+
+            <div class="form-group">
+
+                <h5>Tags</h5>
+
+                @foreach($tags as $tag)
+                    <div class="form-check">
+                        <input class="form-check-input" name="tags[]" type="checkbox" value="{{ $tag->id }}" id="tag-{{ $tag->id }}" {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="tag-{{ $tag->id }}">
+                            {{ $tag->name }}
+                        </label>
+                    </div>
+                @endforeach
+            </div>
+            
 
             <input type="submit" class="btn btn-success" value="Salva post">
         </form>

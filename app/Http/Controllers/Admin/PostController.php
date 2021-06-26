@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Post;
 use Illuminate\Support\Str;
 use App\Category;
+use App\Tag;
 
 class PostController extends Controller
 {
@@ -33,10 +34,12 @@ class PostController extends Controller
      */
     public function create()
     {
-        $categories = Category::All();
+        $categories = Category::all();
+        $tags = Tag::all();
 
         $data = [
-            'categories' => $categories
+            'categories' => $categories,
+            'tags' => $tags
         ]; 
 
         return view('admin.posts.create', $data);
@@ -53,10 +56,13 @@ class PostController extends Controller
         $request->validate( [
             'title' => 'required|max:255',
             'content' => 'required|max:65000',
-            'category_id' => 'nullable|exists:categories,id'
+            'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'nullable|exists:tags,id'
         ] );
 
         $new_post_data = $request->all();
+
+        
 
         // creo lo slug
         $new_slug = Str::slug($new_post_data['title'], '-');
@@ -79,8 +85,13 @@ class PostController extends Controller
 
         $new_post->save();
 
+        // TAGS
+        if(isset($new_post_data['tags']) && is_array($new_post_data['tags'])) {
+            $new_post->tags()->sync($new_post_data['tags']);
+        }
+
         return redirect()->route('admin.posts.show', ['post' => $new_post->id]);
-    }
+    } 
 
     /**
      * Display the specified resource.
@@ -111,10 +122,12 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         $categories = Category::all();
+        $tags = Tag::all();
 
         $data = [
             'post' => $post,
-            'categories' => $categories
+            'categories' => $categories,
+            'tags' => $tags
         ];
 
         return view('admin.posts.edit', $data);
@@ -133,7 +146,8 @@ class PostController extends Controller
         $request->validate( [
             'title' => 'required|max:255',
             'content' => 'required|max:65000',
-            'category_id' => 'nullable|exists:categories,id'
+            'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'nullable|exists:tags,id'
         ] );
 
         $modified_post_data = $request->all();
@@ -162,6 +176,14 @@ class PostController extends Controller
         
         $post->update($modified_post_data);
 
+        // TAGS
+        if(isset($modified_post_data['tags']) && is_array($modified_post_data['tags'])) {
+            $post->tags()->sync($modified_post_data['tags']);
+        } else {
+            $post->tags()->sync([]);
+        }
+        
+
         return redirect()->route('admin.posts.show', ['post' => $post->id]);
 
     }
@@ -175,6 +197,8 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
+        // evita di avere "orfani" nel database. Mi consente di eliminare i post da "Gestisci i tuoi post"
+        $post->tags()->sync([]);
         $post->delete();
 
         return redirect()->route('admin.posts.index');
