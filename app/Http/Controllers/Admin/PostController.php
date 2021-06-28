@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use App\Category;
 use App\Tag;
 use Illuminate\Support\Facades\Storage;
+use App\Mail\NewPostAdminNotification;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
@@ -102,6 +104,9 @@ class PostController extends Controller
         if(isset($new_post_data['tags']) && is_array($new_post_data['tags'])) {
             $new_post->tags()->sync($new_post_data['tags']);
         }
+
+        // Invio l'email all'amministratore del sito
+        Mail::to('francesca@mail.it')->send(new NewPostAdminNotification($new_post));
 
         return redirect()->route('admin.posts.show', ['post' => $new_post->id]);
     } 
