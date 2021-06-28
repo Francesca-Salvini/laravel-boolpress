@@ -8,6 +8,7 @@ use App\Post;
 use Illuminate\Support\Str;
 use App\Category;
 use App\Tag;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -57,7 +58,8 @@ class PostController extends Controller
             'title' => 'required|max:255',
             'content' => 'required|max:65000',
             'category_id' => 'nullable|exists:categories,id',
-            'tags' => 'nullable|exists:tags,id'
+            'tags' => 'nullable|exists:tags,id',
+            'cover-image' => 'nullable|image|max:10000'
         ] );
 
         $new_post_data = $request->all();
@@ -77,6 +79,17 @@ class PostController extends Controller
         }
 
         $new_post_data['slug'] = $new_slug;
+
+        // se c'è un'immagine caricata dall'utente, la salvo in storage 
+        // e aggiungo il path relativo a cover in $new_post_data
+
+        if(isset($new_post_data['cover-image'])) {
+            $new_img_path = Storage::put('posts-cover', $new_post_data['cover-image'] );
+
+            if($new_img_path) {
+                $new_post_data['cover'] = $new_img_path;
+            }
+        }
         
 
         $new_post = new Post();
